@@ -14,9 +14,17 @@ namespace azurefunctions
         private static HttpClient client = new HttpClient();
 
         [FunctionName("SaveToCosmosDb")]
-        public static void Run([IoTHubTrigger("messages/events", Connection = "IotHubConnection")]EventData message, ILogger log)
+        public static void Run([IoTHubTrigger("messages/events", Connection = "IotHubConnection", ConsumerGroup = "cosmosdb")] EventData message, 
+            [CosmosDB(databaseName: "IOT20", collectionName: "Messages",ConnectionStringSetting = "CosmosDbConnection", CreateIfNotExists = true)]out dynamic cosmos,
+        ILogger log)
         {
-            log.LogInformation($"C# IoT Hub trigger function processed a message: {Encoding.UTF8.GetString(message.Body.Array)}");
+            
+            log.LogInformation($"messages/events: {Encoding.UTF8.GetString(message.Body.Array)}");
+            
+            cosmos = Encoding.UTF8.GetString(message.Body.Array);
+
+
+
         }
     }
 }
