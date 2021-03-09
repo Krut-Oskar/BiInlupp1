@@ -41,7 +41,8 @@ void loop() {
     
     if(temperature > (prevData + diff) || temperature < (prevData - diff)){
       prevData = temperature;
-      
+      Serial.printf("Time: %lu", epochTime);
+      char epochTimeBuf[12];
 
       char payload[256];
       DynamicJsonDocument doc(1024);
@@ -50,7 +51,8 @@ void loop() {
 
       serializeJson(doc, payload);
 
-      sendMessage(payload);  
+      sendMessage(payload, itoa(epochTime, epochTimeBuf, 10));
+        
 
     }
   }
@@ -79,4 +81,3 @@ void loop() {
     }
    delay(10 * 1000);
   }*/
-

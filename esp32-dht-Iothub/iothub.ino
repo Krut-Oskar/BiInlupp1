@@ -18,15 +18,18 @@ void sendCallback(IOTHUB_CLIENT_CONFIRMATION_RESULT result)
 void initDevice(){
   Esp32MQTTClient_Init((uint8_t*) connectionString, true);
   Esp32MQTTClient_SetSendConfirmationCallback(sendCallback);
+  Serial.println("Device connected");
 }
 
-void sendMessage(char *payload){
+void sendMessage(char *payload, char *epochTime){
   
   messagePending = true;
   EVENT_INSTANCE *message = Esp32MQTTClient_Event_Generate(payload, MESSAGE);
 
   Esp32MQTTClient_Event_AddProp(message, "School", "Nackademin");
   Esp32MQTTClient_Event_AddProp(message, "Name", "William");
+  Esp32MQTTClient_Event_AddProp(message, "TS", epochTime);
+  
 
   Esp32MQTTClient_SendEventInstance(message);
 
