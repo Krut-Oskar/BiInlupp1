@@ -6,29 +6,61 @@
 
 #define DHT_PIN 4
 #define DHT_TYPE DHT11
+#define INTERVAL 5000
 DHT dht(DHT_PIN, DHT_TYPE);
 const char* ssid = "Nackas hörna";
 const char* pass = "Lennartskoglund";
 static char* connectionString = "HostName=williamsnatverk.azure-devices.net;DeviceId=Esp32;SharedAccessKey=cXN/m4m9euU2zKghHzadzxPh4bJ6DdKGI2slR7GGYwI=";
 static bool isConnected = false;
+bool messagePending = false;
+time_t epochTime;
+float prevData = 0.0;
+float diff = 1.0;
+
 
 
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
+  delay(1000);
   dht.begin();
   initWifi();
   initIotHub();
-  if(isConnected == false){
-    Serial.println("Iot hub failed");
-  }
+  initDevice();
+  delay(2000);
   
-
 }
 
 void loop() {
-  Serial.println("Running loop");
+  unsigned long currentMillis = millis();
+  epochTime = time(NULL);
+  float temperature = dht.readTemperature();
+  float humidity = dht.readHumidity();
+  if(!messagePending){
+    
+    if(temperature > (prevData + diff) || temperature < (prevData - diff)){
+      prevData = temperature;
+      
+
+      char payload[256];
+      DynamicJsonDocument doc(1024);
+      doc["temperature"] = temperature;
+      doc["humidity"] = humidity;
+
+      serializeJson(doc, payload);
+
+      sendMessage(payload);  
+
+    }
+  }
+
+  Esp32MQTTClient_Check();
+  delay(10);
+}
+  
+
+  /*Serial.println("Running loop");
   Serial.println(isConnected);
   if(isConnected){
     
@@ -46,5 +78,5 @@ void loop() {
       Serial.println(payload);
     }
    delay(10 * 1000);
-  }
-}
+  }*/
+
