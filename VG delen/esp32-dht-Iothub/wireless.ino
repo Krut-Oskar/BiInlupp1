@@ -1,0 +1,24 @@
+void initWifi(){
+  WiFi.begin(ssid, pass);
+  while(WiFi.status() != WL_CONNECTED){
+    delay(1000);
+    Serial.print(".");
+  }
+  Serial.print("\nIP Adress: ");
+  Serial.println(WiFi.localIP());
+  Serial.println("Wifi Connected");
+}
+
+void initEpochTime(){
+  configTime(3600, 0, "pool.ntp.org", "time.nist.gov");
+  while(true){
+    epochTime = time(NULL);
+    if(epochTime == 28800){
+      delay(2000);
+    }
+    else{
+      break;
+    }
+    Serial.printf("Epoch Time initalized. Current Time: %lu \n", epochTime);
+  }
+}

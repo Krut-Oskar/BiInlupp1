@@ -15,11 +15,12 @@ namespace azurefunction1
         private static HttpClient client = new HttpClient();
 
         [FunctionName("SaveToCosmos")]
-        public static void Run([IoTHubTrigger("messages/events", Connection = "IoTHub", ConsumerGroup = "cosmos")]EventData message, 
+        public static void Run([IoTHubTrigger("messages/events", Connection = "IoTHub", ConsumerGroup = "cosmos")] EventData message,
             [CosmosDB(databaseName: "IOT20", collectionName: "Measurements", CreateIfNotExists = true, ConnectionStringSetting = "CosmosDB")] out dynamic cosmos,
             ILogger log)
         {
-            log.LogInformation($"C# IoT Hub trigger function processed a message: {Encoding.UTF8.GetString(message.Body.Array)}");
+            //log.LogInformation($"C# IoT Hub trigger function processed a message: {Encoding.UTF8.GetString(message.Body.Array)}");
+
 
             var msg = JsonConvert.DeserializeObject<DhtMeasurements>(Encoding.UTF8.GetString(message.Body.Array));
             msg.DeviceId = message.SystemProperties["iothub-connection-device-id"].ToString();
@@ -29,7 +30,11 @@ namespace azurefunction1
 
             var json = JsonConvert.SerializeObject(msg);
             cosmos = json;
-            
+
+
+
+
+
         }
     }
 }
