@@ -8,9 +8,9 @@
 #define DHT_TYPE DHT11
 #define INTERVAL 5000
 DHT dht(DHT_PIN, DHT_TYPE);
-const char* ssid = "Nackas hörna";
-const char* pass = "Lennartskoglund";
-static char* connectionString = "HostName=williamsnatverk.azure-devices.net;DeviceId=Esp32;SharedAccessKey=cXN/m4m9euU2zKghHzadzxPh4bJ6DdKGI2slR7GGYwI=";
+const char* ssid = "**********";
+const char* pass = "***********";
+static char* connectionString = "********************";
 static bool isConnected = false;
 bool messagePending = false;
 time_t epochTime;
@@ -62,22 +62,3 @@ void loop() {
 }
   
 
-  /*Serial.println("Running loop");
-  Serial.println(isConnected);
-  if(isConnected){
-    
-    float temperature = dht.readTemperature();
-    float humidity = dht.readHumidity();
-    char temp[10]; 
-    dtostrf(temperature, 6,2, temp); 
-    char hum[10]; 
-    dtostrf(humidity, 6,2, hum);
-  
-    char payload[32];
-    sprintf(payload, "{\"temp\": %s, \"hum\": %s}", temp, hum);
-    if(Esp32MQTTClient_SendEvent(payload)){
-      Serial.println("Success");
-      Serial.println(payload);
-    }
-   delay(10 * 1000);
-  }*/
